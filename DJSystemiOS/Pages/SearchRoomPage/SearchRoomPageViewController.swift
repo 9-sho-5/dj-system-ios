@@ -2,13 +2,13 @@ import PKHUD
 import SwiftUI
 import UIKit
 
-protocol HomePageControllerProtocol: AnyObject {
+protocol SearchRoomPageControllerProtocol: AnyObject {
     func searchRoom(byId id: String) async throws
-    var state: HomePageView.DataSource { get set }
+    var state: SearchRoomPageView.DataSource { get set }
 }
 
-final class HomePageViewController: UIViewController {
-    @ObservedObject var state: HomePageView.DataSource = .init()
+final class SearchRoomPageViewController: UIViewController {
+    @ObservedObject var state: SearchRoomPageView.DataSource = .init()
     // TODO: 後でletに変える
     var roomAPI: GetRoomAPIProtocol = Room.API()
 
@@ -24,7 +24,7 @@ final class HomePageViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        let homePage = HomePageView(controller: self)
+        let homePage = SearchRoomPageView(controller: self)
         let hostingVC = UIHostingController(rootView: homePage)
         addChild(hostingVC)
         view.addSubview(hostingVC.view)
@@ -33,7 +33,7 @@ final class HomePageViewController: UIViewController {
     }
 }
 
-extension HomePageViewController: HomePageControllerProtocol {
+extension SearchRoomPageViewController: SearchRoomPageControllerProtocol {
     func searchRoom(byId id: String) async throws {
         do {
             // ローディング開始

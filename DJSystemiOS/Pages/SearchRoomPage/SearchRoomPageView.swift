@@ -1,10 +1,10 @@
 import SwiftUI
 
-struct HomePageView: View {
-    weak var controller: HomePageControllerProtocol?
+struct SearchRoomPageView: View {
+    weak var controller: SearchRoomPageControllerProtocol?
     @ObservedObject var dataSource: DataSource
 
-    init(controller: HomePageControllerProtocol) {
+    init(controller: SearchRoomPageControllerProtocol) {
         self.controller = controller
         self.dataSource = controller.state
     }
@@ -74,7 +74,7 @@ struct HomePageView: View {
     }
 }
 
-extension HomePageView {
+extension SearchRoomPageView {
     class DataSource: ObservableObject {
         @Published var searchQuery = ""
         @Published var currentRoom: RoomOverview?
