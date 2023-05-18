@@ -1,33 +1,24 @@
 import Foundation
 import Moya
 
+extension Room.API {
+    struct GetRoomResponse: Codable {
+        let id: String
+        let name: String
+        let description: String
+        let roomCooltime: Int
+    }
+}
+
 protocol GetRoomAPIProtocol {
-    func getRoom(id: String) async throws -> RoomOverview
+    func getRoom(id: String) async throws -> Result<Room.API.GetRoomResponse, APIClientError>
 }
 
 extension Room.API: GetRoomAPIProtocol {
-    func getRoom(id: String) async throws -> RoomOverview {
-        return try await withCheckedThrowingContinuation { continuation in
-            Room.API.provider.request(.getRoom(id: id)) { result in
-                switch result {
-                case let .success(response):
-                    do {
-                        // Status Code 200...299 の判定
-                        if response.statusCode < 200 || response.statusCode >= 300 {
-                            continuation.resume(returning: RoomOverview(id: "", name: "", description: ""))
-                        } else {
-                            let filteredResponse = try response.filterSuccessfulStatusCodes()
-                            let roomOverview = try filteredResponse.map(RoomOverview.self)
-                            continuation.resume(returning: roomOverview)
-                        }
-                    } catch let error {
-                        continuation.resume(throwing: error)
-                    }
-                case let .failure(error):
-                    continuation.resume(throwing: error)
-                }
-            }
-        }
+    func getRoom(id: String) async -> Result<GetRoomResponse, APIClientError> {
+        let client = APIClient(baseURL: Environment.BaseAPIURL)
+        let result = await client.get(from: .getRoom(roomId: id), dataType: Room.API.GetRoomResponse.self)
+        return result
     }
 }
 

@@ -5,6 +5,7 @@ enum URLBuilder {
     case musicTop(roomId: String)
     case musicSearch(roomId: String, query: String)
     case requestMusic(roomId: String)
+    case getRoom(roomId: String)
 
     var endpoint: URL {
         let baseURL = "http://example.com"
@@ -17,6 +18,8 @@ enum URLBuilder {
             return URL(string: "\(baseURL)/room/\(roomId)/music/search?q=\(query)")!
         case .requestMusic(let roomId):
             return URL(string: "\(baseURL)/room/\(roomId)/request")!
+        case .getRoom(let roomId):
+            return URL(string: "\(baseURL)/room/\(roomId)")!
         }
     }
 }
@@ -26,6 +29,7 @@ enum Endpoint {
     case musicTop(roomId: String)
     case musicSearch(roomId: String, query: String)
     case requestMusic(roomId: String)
+    case getRoom(roomId: String)
 
     var path: String {
         switch self {
@@ -37,6 +41,8 @@ enum Endpoint {
             return "/room/\(roomId)/music/search?q=\(query)"
         case .requestMusic(let roomId):
             return "/room/\(roomId)/request"
+        case .getRoom(let roomId):
+            return "/room/\(roomId)"
         }
     }
 }

@@ -49,13 +49,6 @@ struct SearchRoomPageView: View {
                 Text("検索する")
                     .frame(maxWidth: .infinity, minHeight: 42)
             }
-            .alert("ルームが見つかりませんでした", isPresented: $dataSource.shouldShowAlert) {
-                Button("OK") {
-                    // 了解ボタンが押された時の処理
-                }
-            } message: {
-                Text("IDが間違っていないか確認してください")
-            }
             .background(Color.pink)
             .foregroundColor(Color(.white))
             .font(.system(size: 12, weight: .bold, design: .default))
@@ -78,7 +71,6 @@ extension SearchRoomPageView {
     class DataSource: ObservableObject {
         @Published var searchQuery = ""
         @Published var currentRoom: RoomOverview?
-        @Published var shouldShowAlert = false
         @Published var showResultText = false
     }
 }

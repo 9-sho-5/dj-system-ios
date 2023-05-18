@@ -2,9 +2,9 @@ import PKHUD
 import SwiftUI
 import UIKit
 
-protocol SearchRoomPageControllerProtocol: AnyObject {
-    func searchRoom(byId id: String) async throws
+protocol SearchRoomPageControllerProtocol: Transitioner {
     var state: SearchRoomPageView.DataSource { get set }
+    func searchRoom(byId id: String) async throws
 }
 
 final class SearchRoomPageViewController: UIViewController {
@@ -13,13 +13,12 @@ final class SearchRoomPageViewController: UIViewController {
     var roomAPI: GetRoomAPIProtocol = Room.API()
 
     init(roomAPI: GetRoomAPIProtocol) {
-        super.init(nibName: nil, bundle: nil)
         self.roomAPI = roomAPI
+        super.init(nibName: nil, bundle: nil)
     }
 
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        self.roomAPI = Room.API()
+        fatalError("init(coder:) has not been implemented")
     }
 
     override func viewDidLoad() {
@@ -38,34 +37,37 @@ extension SearchRoomPageViewController: SearchRoomPageControllerProtocol {
         do {
             // ローディング開始
             HUD.show(.progress)
-            // Roomの存在確認
-            let roomOverview = try await roomAPI.getRoom(id: id)
-            // RoomIdが空でないとき
-            if !roomOverview.id.isEmpty {
+            // レスポンス取得
+            let result = try await roomAPI.getRoom(id: id)
+            switch result {
+            // Roomが見つかった時
+            case .success(let response):
+                let roomOverview = RoomOverview(id: response.id, name: response.name, description: response.description)
                 Task.detached { @MainActor [state] in
                     // 取得したRoomOverviewを渡す
                     state.currentRoom = roomOverview
                     // 表示結果を表示する
                     state.showResultText = true
-                    // アラートを非表示する
-                    state.shouldShowAlert = false
                 }
-                // 遷移先のRoomOverViewController
-                let roomOverviewController = RoomOverviewViewController(roomOverview: roomOverview)
-                // 画面遷移
-                self.navigationController?.pushViewController(roomOverviewController, animated: true)
+                let router = SearchRoomRouter(controller: self)
+                // Routerを使った画面遷移
+                router.transitionToRoomOverviewPage(roomOverview: roomOverview)
                 // ローディング終了
                 HUD.hide()
-            // RoomIdが空の時(""の時)
-            } else {
-                Task.detached { @MainActor [state] in
-                    // 空のRoomOverviewを渡す
-                    state.currentRoom = RoomOverview(id: "", name: "", description: "")
-                    // 表示結果を非表示にする
-                    state.showResultText = false
-                    // アラートを表示する
-                    state.shouldShowAlert = true
-                }
+            // Roomが見つからなかった時
+            case .failure:
+                let alert = UIAlertController(title: "ルームが見つかりませんでした", message: "IDが間違っていないか確認してください", preferredStyle: .alert)
+                alert.addAction(
+                    UIAlertAction(title: "OK", style: .cancel, handler:{ [self] (action: UIAlertAction!) -> Void in
+                        Task.detached { @MainActor [state] in
+                            // 空のRoomOverviewを渡す
+                            state.currentRoom = RoomOverview(id: "", name: "", description: "")
+                            // 表示結果を非表示にする
+                            state.showResultText = false
+                        }
+                    })
+                )
+                present(alert, animated: true)
                 // ローディング終了
                 HUD.hide()
             }

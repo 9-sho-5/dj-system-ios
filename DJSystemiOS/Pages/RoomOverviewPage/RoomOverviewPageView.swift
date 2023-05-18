@@ -2,7 +2,6 @@ import SwiftUI
 
 struct RoomOverviewPageView: View {
 
-    @SwiftUI.Environment(\.dismiss) var dismiss
     weak var controller: RoomOverviewControllerProtocol?
     @ObservedObject var dataSource: DataSource
 
