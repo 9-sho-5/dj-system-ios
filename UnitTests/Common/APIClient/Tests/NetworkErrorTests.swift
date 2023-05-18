@@ -1,6 +1,6 @@
-import XCTest
-import Foundation
 @testable import DJSystemiOS
+import Foundation
+import XCTest
 
 
 struct Sample: Codable {}
@@ -14,7 +14,7 @@ class NetworkErrorTests: XCTestCase {
 
         for error in NetworkError.allCases {
             MockNSErrorHandler.registerError(error)
-            let result: Result<Sample, APIClientError> = await client.get(from: .musicTop(roomId: "query"))
+            let result: Result<Sample, APIClientError> = await client.get(from: .musicTop(roomId: "query"), dataType: Sample.self)
             switch result {
             case .success:
                 XCTFail("Expected network error, got success")

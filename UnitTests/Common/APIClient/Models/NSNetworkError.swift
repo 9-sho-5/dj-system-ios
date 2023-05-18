@@ -1,5 +1,5 @@
-import Foundation
 @testable import DJSystemiOS
+import Foundation
 
 class NSNetworkError: NSError {
     init(error: DJSystemiOS.NetworkError) {

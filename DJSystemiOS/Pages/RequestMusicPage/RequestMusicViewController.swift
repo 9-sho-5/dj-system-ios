@@ -38,7 +38,7 @@ extension RequestMusicViewController: RequestMusicViewControllerProtocol {
         HUD.show(.progress)
         let result = await Room.API().requestMusic(to: roomId, inputs: Room.API.NewRequestMusicInput(musics: [music.id], radioName: radioName, message: message))
         switch result {
-        case .success(let result):
+        case .success:
             HUD.flash(.success, delay: 1.0)
             guard let navigationController = self.navigationController else { return }
             navigationController.pushViewController(CompleteRequestViewController(), animated: true)

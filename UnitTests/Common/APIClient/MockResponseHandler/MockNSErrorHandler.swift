@@ -1,5 +1,5 @@
-import Foundation
 @testable import DJSystemiOS
+import Foundation
 
 class MockNSErrorHandler: URLProtocol {
     private static var error: NetworkError?

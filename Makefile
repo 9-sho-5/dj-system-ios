@@ -1,4 +1,13 @@
 .DEFAULT_GOAL := setup
+PRODUCT_NAME := DJSystemiOS
+SCHEME_NAME := DJSystemiOS
+PROJECT_NAME := ${PRODUCT_NAME}.xcodeproj
+TEST_SDK := iphonesimulator
+TEST_CONFIGURATION := Debug
+TEST_PLATFORM := iOS Simulator
+TEST_DEVICE ?= iPhone 14
+TEST_OS ?= 16.2
+TEST_DESTINATION := 'platform=${TEST_PLATFORM},name=${TEST_DEVICE},OS=${TEST_OS}'
 
 .PHONY: setup
 setup: mint xcodegen open
@@ -9,7 +18,7 @@ xcodegen:
 
 .PHONY: open
 open:
-	open DJSystemiOS.xcodeproj
+	open ${PRODUCT_NAME}.xcodeproj
 
 .PHONY: mint
 mint:
@@ -17,8 +26,41 @@ mint:
 
 .PHONY: install-mint
 install-mint:
-	git clone --branch 0.16.0 https://github.com/yonaskolb/Mint
-	cd Mint
-	make
-	cd ..
+	git clone --branch 0.17.5 https://github.com/yonaskolb/Mint
+	cd Mint && make
 	rm -rf Mint
+
+.PHONY: test
+test:
+	xcodebuild \
+-sdk ${TEST_SDK} \
+-configuration ${TEST_CONFIGURATION} \
+-project ${PROJECT_NAME} \
+-scheme '${SCHEME_NAME}' \
+-destination ${TEST_DESTINATION} \
+-resultBundlePath TestResults \
+test | xcbeautify
+
+.PHONY: build
+build:
+	xcodebuild \
+-configuration ${TEST_CONFIGURATION} \
+-project ${PROJECT_NAME} \
+-scheme '${SCHEME_NAME}' \
+-showBuildTimingSummary \
+-destination ${TEST_DESTINATION} \
+| xcbeautify
+
+
+.PHONY: packages
+packages:
+	xcodebuild -resolvePackageDependencies \
+-project ${PROJECT_NAME} \
+-destination ${TEST_DESTINATION} \
+-scheme ${SCHEME_NAME} \
+| xcbeautify
+
+.PHONY: clean
+clean:
+	xcodebuild clean -project ${PROJECT_NAME}
+

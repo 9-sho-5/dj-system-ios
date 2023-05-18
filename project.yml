@@ -1,4 +1,3 @@
-# プロジェクト名(例: XcodeGenPractice.xcodeprojみたいなやつが生成される)
 name: DJSystemiOS
 attributes:
   ORGANIZATIONAME: "Tomoya Tanaka"
@@ -13,18 +12,18 @@ options:
     # - pattern: '^.*Page$'
     #   order: [View, Presenter, Interactor, Router]
 configs:
-  Develop: debug
+  Debug: debug
   Release: release
 
 schemes: 
-  App Develop:
+  DJSystemiOS:
     build:
       targets:
         DJSystemiOS: all
     run:
-      config: Develop
+      config: Debug
     test:
-      config: Develop
+      config: Debug
       targets:
         - name: DJSystemiOSTests
           parallelizable: true

@@ -53,7 +53,7 @@ enum NetworkError: LocalizedError {
             return -1005
         case .appTransportSecurityRequiresSecureConnection:
             return -1022
-        case .other(let error):
+        case .other:
             return 0
         }
     }

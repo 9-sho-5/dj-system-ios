@@ -1,17 +1,15 @@
-import XCTest
-import Foundation
 @testable import DJSystemiOS
+import Foundation
+import XCTest
 
 final class UnexpectedAPIClientErrorTests: XCTestCase {
     func testUnexpectedAPIClientError() async {
-//        let expectation = XCTestExpectation(description: "unexpectedAPIClientError test")
-
         let invalidUrlResponse = URLResponse(url: URL(string: "https://example.com")!, mimeType: nil, expectedContentLength: 0, textEncodingName: nil)
         let session = createSessionWithUnexpectedUrlResponse(urlResponse: invalidUrlResponse)
 
         let apiClient = APIClient(urlSession: session, baseURL: URL(string: "https://example.com")!)
 
-        let result: Result<Sample, APIClientError> = await apiClient.get(from: .musicTop(roomId: "hoge"))
+        let result: Result<Sample, APIClientError> = await apiClient.get(from: .musicTop(roomId: "hoge"), dataType: Sample.self)
 
         switch result {
         case .success:
@@ -23,12 +21,9 @@ final class UnexpectedAPIClientErrorTests: XCTestCase {
             }
             XCTAssertEqual(
                 apiClientError.url,
-                UnexpectedAPIClientError.init(urlResponse: invalidUrlResponse).url
+                UnexpectedAPIClientError(urlResponse: invalidUrlResponse).url
             )
-//            expectation.fulfill()
         }
-
-//        wait(for: [expectation], timeout: 10)
     }
     private func createSessionWithUnexpectedUrlResponse(urlResponse: URLResponse) -> URLSession {
         let configuration = URLSessionConfiguration.ephemeral

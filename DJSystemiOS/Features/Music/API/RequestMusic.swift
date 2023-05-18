@@ -29,7 +29,7 @@ protocol NewRequestMusicProtocol {
 
 extension Room.API: NewRequestMusicProtocol {
     func requestMusic(to id: String, inputs: NewRequestMusicInput) async -> Result<RequestMusicResponse, APIClientError> {
-        let client = APIClient(baseURL: Environment.BaseAPIURL)
+        let client = APIClient(baseURL: AppConfig.BaseAPIURL)
         let input: NewRequestMusicInput = inputs
         let requestMusic = await client.post(to: .requestMusic(roomId: id), with: input, responseDataType: Room.API.RequestMusicResponse.self)
         return requestMusic

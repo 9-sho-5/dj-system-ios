@@ -1,5 +1,5 @@
-import XCTest
 @testable import DJSystemiOS
+import XCTest
 
 class APIClientInternalErrorTests: XCTestCase {
     let baseURL = URL(string: "https://api.example.com")!
@@ -15,7 +15,7 @@ class APIClientInternalErrorTests: XCTestCase {
         let response = HTTPURLResponse(url: baseURL, statusCode: 200, httpVersion: "HTTP/1.1", headerFields: nil)!
         let invalidJsonData = "{ invalid json }".data(using: .utf8)!
         MockAPIResponseHandler.registerResponse(httpURLResponse: response, jsonData: invalidJsonData)
-        let result: Result<SomeDecodableModel, APIClientError> = await apiClient.get(from: .musicTop(roomId: "hoge"))
+        let result: Result<SomeDecodableModel, APIClientError> = await apiClient.get(from: .musicTop(roomId: "hoge"), dataType: SomeDecodableModel.self)
         switch result {
         case .success:
             XCTFail("Expected a decode error")
@@ -29,7 +29,7 @@ class APIClientInternalErrorTests: XCTestCase {
     }
 
     func testEncodeError() async {
-        let result: Result<SomeDecodableModel, APIClientError> = await apiClient.post(to: .musicTop(roomId: "hoge"), with: SomeNonEncodableModel())
+        let result: Result<SomeDecodableModel, APIClientError> = await apiClient.post(to: .musicTop(roomId: "hoge"), with: SomeNonEncodableModel(), responseDataType: SomeDecodableModel.self)
         switch result {
         case .success:
             XCTFail("Expected an encode error")

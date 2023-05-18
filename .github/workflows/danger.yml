@@ -6,23 +6,52 @@ on:
       - opened
       - synchronize
 
+permissions:
+  actions: write
+  checks: write
+  contents: write
+  # deployments: read
+  issues: write
+  pull-requests: write
+  statuses: write
+
 jobs:
   danger:
-    runs-on: macos-latest
+    runs-on: macos-12
     steps:
     - name: Check out code
       uses: actions/checkout@v2
+    - name: Select Xcode 14.2
+      run: sudo xcode-select -s /Applications/Xcode_14.2.app
+    - name: Install Dependencies
+      run: |
+        make install-mint
+        make mint
 
     - name: Install SwiftLint
       run: |
         brew update
         rm -f /usr/local/bin/swiftlint
         brew install swiftlint
+        rm -f /usr/local/bin/xcodegen
+        brew install xcodegen
+        rm -f /usr/local/bin/xcbeautify
+        brew install xcbeautify
 
+    - name: Generate .xcodeproj file
+      run: |
+        xcodegen generate
+    - name: resolvePackagesDependecies 
+      run: make packages
+    - name: make build 
+      run: make build
+    - name: Test
+      run: |
+        make test
     - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: 14
+        node-version: 16
 
     - name: Cache Node.js dependencies
       uses: actions/cache@v2
@@ -43,6 +72,12 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-spm-
 
+    - uses: kishikawakatsumi/xcresulttool@v1
+      with:
+        path: TestResults.xcresult
+      if: success() || failure()
+
+
     - name: Install Danger and dependencies
       run: |
         cd DJSystemiOS-PRLinter
@@ -50,12 +85,9 @@ jobs:
 
     - name: Run Danger
       run: |
+        echo '{}' >> result.json
         cd DJSystemiOS-PRLinter
         swift run danger-swift ci --cwd ../
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: cat result.json
-      run: |
-        cat result.json
+        GITHUB_TOKEN: ${{ secrets.REPOSITORY_ACCESS_TOKEN }}
 

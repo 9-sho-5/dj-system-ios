@@ -102,3 +102,6 @@ DerivedData/
 .swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
 .netrc
 
+
+# ruby
+vendor/
