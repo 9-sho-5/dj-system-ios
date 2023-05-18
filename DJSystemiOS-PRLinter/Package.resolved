@@ -2,12 +2,12 @@
   "object": {
     "pins": [
       {
-        "package": "DangerXCodeSummary",
-        "repositoryURL": "https://github.com/f-meloni/danger-swift-xcodesummary",
+        "package": "DangerSwiftKantoku",
+        "repositoryURL": "https://www.github.com/yumemi-inc/danger-swift-kantoku.git",
         "state": {
           "branch": null,
-          "revision": "289d5136cead3d4b1eae509acc3f0b044252fc6c",
-          "version": "1.2.1"
+          "revision": "8d3283ec9a00f524135e6ccc80762457c1891389",
+          "version": "0.1.1"
         }
       },
       {
@@ -53,6 +53,15 @@
           "branch": null,
           "revision": "1fe824b80d89201652e7eca7c9252269a1d85e25",
           "version": "2.0.1"
+        }
+      },
+      {
+        "package": "XCResultKit",
+        "repositoryURL": "https://github.com/davidahouse/XCResultKit",
+        "state": {
+          "branch": null,
+          "revision": "2fe24c2675432c4b8c8d7ab0364e2760190b6fea",
+          "version": "0.9.3"
         }
       }
     ]

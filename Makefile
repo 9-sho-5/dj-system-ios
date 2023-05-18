@@ -24,12 +24,6 @@ open:
 mint:
 	mint bootstrap
 
-.PHONY: install-mint
-install-mint:
-	git clone --branch 0.17.5 https://github.com/yonaskolb/Mint
-	cd Mint && make
-	rm -rf Mint
-
 .PHONY: test
 test:
 	xcodebuild \
@@ -38,6 +32,8 @@ test:
 -project ${PROJECT_NAME} \
 -scheme '${SCHEME_NAME}' \
 -destination ${TEST_DESTINATION} \
+-parallel-testing-enabled NO \
+-enableCodeCoverage YES \
 -resultBundlePath TestResults \
 test | xcbeautify
 
@@ -50,7 +46,6 @@ build:
 -showBuildTimingSummary \
 -destination ${TEST_DESTINATION} \
 | xcbeautify
-
 
 .PHONY: packages
 packages:

@@ -24,6 +24,7 @@ schemes:
       config: Debug
     test:
       config: Debug
+      gatherCoverageData: true
       targets:
         - name: DJSystemiOSTests
           parallelizable: true
@@ -95,13 +96,13 @@ targets:
         name: R.Swift
         inputFiles:
           - $TEMP_DIR/rswift-lastrun
-        basedOnDependencyAnalysis: false
+        basedOnDependencyAnalysis: true
         outputFiles:
           - $(SRCROOT)/DJSystemiOS/Generated/R.generated.swift
         shell: "/bin/zsh"
       - path: ./Scripts/swiftlint.sh
         name: SwiftLint
-        basedOnDependencyAnalysis: false
+        basedOnDependencyAnalysis: true
         shell: "/bin/zsh"
 
   DJSystemiOSTests:

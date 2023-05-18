@@ -1,5 +1,5 @@
 import Danger
-import DangerXCodeSummary // package: https://github.com/f-meloni/danger-swift-xcodesummary.git
+import DangerSwiftKantoku
 
 let danger = Danger()
 let allSourceFiles = danger.git.modifiedFiles + danger.git.createdFiles
@@ -16,4 +16,4 @@ if allSourceFiles.first(where: { $0.fileType == .swift }) != nil {
     message("No .swift file was added")
 }
 
-XCodeSummary(filePath: "result.json").report()
+danger.kantoku.parseXCResultFile(at: "TestResults.xcresult", configuration: .default)
